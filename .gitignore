@@ -1,0 +1,7 @@
+ifw/**/*.jpg
+ifw/**/*.png
+ifw/**/*.jpeg
+data/**/*.jpg
+data/**/*.png
+data/**/*.jpeg
+.idea/
