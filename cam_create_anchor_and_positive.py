@@ -1,9 +1,17 @@
 import cv2
 import os
 import uuid
+import tensorflow as tf
+
+gpus = tf.config.experimental.list_physical_devices('GPU')
+print('gpus: ', gpus)
+for gpu in gpus:
+    tf.config.experimental.set_memory_growth(gpu, True)
+    print('cur gpu: ', gpu)
 
 POS_PATH = os.path.join('data', 'positive')
 ANC_PATH = os.path.join('data', 'anchor')
+
 
 
 cap = cv2.VideoCapture(0)
