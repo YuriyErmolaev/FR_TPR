@@ -13,6 +13,9 @@ import tensorflow as tf
 import os
 import uuid
 
+#step 1
+# Setup GPU and data paths
+
 gpus = tf.config.experimental.list_physical_devices('GPU')
 print('gpus: ', gpus)
 for gpu in gpus:
@@ -24,6 +27,7 @@ NEG_PATH = os.path.join('data', 'negative')
 ANC_PATH = os.path.join('data', 'anchor')
 
 #step 2
+# Load and count dataset images
 
 anchor = tf.data.Dataset.list_files(os.path.join(ANC_PATH, '*.jpg')).take(300)
 positive = tf.data.Dataset.list_files(os.path.join(POS_PATH, '*.jpg')).take(300)
@@ -34,6 +38,7 @@ print(f"Number of positive images: {positive.cardinality().numpy()}")
 print(f"Number of negative images: {negative.cardinality().numpy()}")
 
 #step 3
+# Def image preprocess
 
 
 def preprocess(file_path):
@@ -52,7 +57,7 @@ def preprocess(file_path):
 
 
 #step 4
-
+# Pair and label image datasets
 
 positives = tf.data.Dataset.zip((anchor, positive, tf.data.Dataset.from_tensor_slices(tf.ones(len(anchor)))))
 negatives = tf.data.Dataset.zip((anchor, negative, tf.data.Dataset.from_tensor_slices(tf.zeros(len(anchor)))))
@@ -60,13 +65,14 @@ data = positives.concatenate(negatives)
 
 
 #step 5
+# Def for preproc paired images
 
 def preprocess_twin(input_img, validation_img, label):
     return(preprocess(input_img), preprocess(validation_img), label)
 
 
 #step 6
-
+# Config dataloader pipeline for training
 
 # Build dataloader pipeline
 data = data.map(preprocess_twin)
@@ -76,14 +82,14 @@ data = data.shuffle(buffer_size=1024)
 
 #step 7
 
-  # Training partition
+# Training partition
 train_data = data.take(round(len(data)*.7))
 train_data = train_data.batch(16)
 train_data = train_data.prefetch(8)
 
 
 #step 8
-
+# Separate data into training set
 
 # Testing partition
 test_data = data.skip(round(len(data)*.7))
@@ -93,7 +99,7 @@ test_data = test_data.prefetch(8)
 
 
 #step 9
-
+# Def emb model arch
 
 def make_embedding():
     inp = Input(shape=(100, 100, 3), name='input_image')
@@ -121,7 +127,7 @@ def make_embedding():
 
 
 #step 10
-
+# Init and show the emb model
 
 embedding = make_embedding()
 embedding.summary()
@@ -129,7 +135,7 @@ embedding.summary()
 
 
 #step 11
-
+# Def custom layer to calc L1 distance for Siamese network
 
 # Siamese L1 Distance class
 class L1Dist(Layer):
@@ -147,7 +153,7 @@ class L1Dist(Layer):
 
 
 #step 12
-
+# def Construct Siamese network model
 
 def make_siamese_model():
     # Anchor image input in the network
@@ -169,20 +175,21 @@ def make_siamese_model():
 
 
 #step 13
-
+# Init and show Siam network
 
 siamese_model = make_siamese_model()
 siamese_model.summary()
 
 
 #step 14
-
+# Set insts loss_funct and optimizer for the Siamese network
 
 binary_cross_loss = tf.losses.BinaryCrossentropy()
 opt = tf.keras.optimizers.Adam(1e-4) # 0.0001
 
 
 #step 15
+# Set checkpoint mechanism for training
 
 checkpoint_dir = './training_checkpoints'
 checkpoint_prefix = os.path.join(checkpoint_dir, 'ckpt')
@@ -191,6 +198,7 @@ checkpoint = tf.train.Checkpoint(opt=opt, siamese_model=siamese_model)
 
 
 #step 16
+# Def train step for Siamese model
 
 
 @tf.function
@@ -220,7 +228,7 @@ def train_step(batch):
 
 
 #step 17
-
+# Def train process over epochs
 
 def train(data, EPOCHS):
     # Loop through epochs
@@ -240,13 +248,14 @@ def train(data, EPOCHS):
 
 
 #step 18
-
+# Exec train with number epochs
 
 EPOCHS = 50
 train(train_data, EPOCHS)
 
 
 #step 19
+#save model to file
 
 
 siamese_model.save('siamesemodelv3.keras')
