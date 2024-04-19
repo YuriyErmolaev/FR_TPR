@@ -1,67 +1,22 @@
-#step 1
-
-# Import standard dependencies
-import cv2
-import os
-import random
-import numpy as np
-from matplotlib import pyplot as plt
-# Import tensorflow dependencies - Functional API
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Layer, Conv2D, Dense, MaxPooling2D, Input, Flatten
 import tensorflow as tf
 import os
 import uuid
+from setup import setup_gpu, setup_paths
+from data_loading import load_and_count_images, pair_and_label_images, preprocess
 
 #step 1
 # Setup GPU and data paths
-
-gpus = tf.config.experimental.list_physical_devices('GPU')
-print('gpus: ', gpus)
-for gpu in gpus:
-    tf.config.experimental.set_memory_growth(gpu, True)
-    print('cur gpu: ', gpu)
-
-POS_PATH = os.path.join('data', 'positive')
-NEG_PATH = os.path.join('data', 'negative')
-ANC_PATH = os.path.join('data', 'anchor')
-
-#step 2
-# Load and count dataset images
-
-anchor = tf.data.Dataset.list_files(os.path.join(ANC_PATH, '*.jpg')).take(300)
-positive = tf.data.Dataset.list_files(os.path.join(POS_PATH, '*.jpg')).take(300)
-negative = tf.data.Dataset.list_files(os.path.join(NEG_PATH, '*.jpg')).take(300)
-
-print(f"Number of anchor images: {anchor.cardinality().numpy()}")
-print(f"Number of positive images: {positive.cardinality().numpy()}")
-print(f"Number of negative images: {negative.cardinality().numpy()}")
-
-#step 3
-# Def image preprocess
+setup_gpu()
+POS_PATH, NEG_PATH, ANC_PATH = setup_paths()
 
 
-def preprocess(file_path):
-    # Read in image from file path
-    byte_img = tf.io.read_file(file_path)
-    # Load in the image
-    img = tf.io.decode_jpeg(byte_img)
+# Step 2, 3, 4
+# Load dataset images, preprocess, and label pairs for training
+anchor, positive, negative = load_and_count_images(ANC_PATH, POS_PATH, NEG_PATH)
+data = pair_and_label_images(anchor, positive, negative)
 
-    # Preprocessing steps - resizing the image to be 100x100x3
-    img = tf.image.resize(img, (100, 100))
-    # Scale image to be between 0 and 1
-    img = img / 255.0
-
-    # Return image
-    return img
-
-
-#step 4
-# Pair and label image datasets
-
-positives = tf.data.Dataset.zip((anchor, positive, tf.data.Dataset.from_tensor_slices(tf.ones(len(anchor)))))
-negatives = tf.data.Dataset.zip((anchor, negative, tf.data.Dataset.from_tensor_slices(tf.zeros(len(anchor)))))
-data = positives.concatenate(negatives)
 
 
 #step 5
