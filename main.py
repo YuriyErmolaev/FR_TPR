@@ -5,7 +5,7 @@ import os
 from setup import setup_gpu, setup_paths
 from data_loading import load_and_count_images, pair_and_label_images, preprocess #preprocess use in data pipeline
 from data_pipeline import configure_training_pipeline, split_data
-from model_architecture import make_embedding
+from model_architecture import make_embedding, make_siamese_model
 
 #step 1
 # Setup GPU and data paths
@@ -27,58 +27,19 @@ data = pair_and_label_images(anchor, positive, negative)
 data = configure_training_pipeline(data)
 train_data, test_data = split_data(data)
 
-# step 9
-# Def emb model arch
-# model_architecture.py
+# step 9 # Def emb model arch # model_architecture.py
 
 # step 10
 # Init and show the emb model
 embedding = make_embedding()
 embedding.summary()
 
-#step 11
-# Def custom layer to calc L1 distance for Siamese network
-
-# Siamese L1 Distance class
-class L1Dist(Layer):
-
-    # Init method - inheritance
-    def __init__(self, **kwargs):
-        super().__init__()
-
-    # Magic happens here - similarity calculation
-    # def call(self, input_embedding, validation_embedding):
-    def call(self, inputs):
-        # return tf.math.abs(input_embedding - validation_embedding)
-        input_embedding, validation_embedding = inputs
-        return tf.math.abs(input_embedding - validation_embedding)
-
-
-#step 12
-# def Construct Siamese network model
-
-def make_siamese_model():
-    # Anchor image input in the network
-    input_image = Input(name='input_img', shape=(100, 100, 3))
-
-    # Validation image in the network
-    validation_image = Input(name='validation_img', shape=(100, 100, 3))
-
-    # Combine siamese distance components
-    siamese_layer = L1Dist()
-    siamese_layer._name = 'distance'
-    # distances = siamese_layer(embedding(input_image), embedding(validation_image))
-    distances = siamese_layer([embedding(input_image), embedding(validation_image)])
-
-    # Classification layer
-    classifier = Dense(1, activation='sigmoid')(distances)
-
-    return Model(inputs=[input_image, validation_image], outputs=classifier, name='SiameseNetwork')
+#step 11 # Def custom layer to calc L1 distance for Siamese network # model_architecture.py
+#step 12 # def Construct Siamese network model # model_architecture.py
 
 
 #step 13
 # Init and show Siam network
-
 siamese_model = make_siamese_model()
 siamese_model.summary()
 
