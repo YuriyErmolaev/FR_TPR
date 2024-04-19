@@ -1,9 +1,10 @@
 ## Dataset Preparation
 
-For the Siamese model training, organize images into three distinct folders:
-- **Positive**: Contains images for creating positive pairs (images of the same person).
-- **Negative**: Contains images for creating negative pairs (images of different people).
-- **Anchor**: Contains anchor images used for comparisons.
+For the Siamese model training, 
+need organize images into three folders (in data folder):
+- **positive**: Contains images for creating positive pairs (images of the same person).
+- **negative**: Contains images for creating negative pairs (images of different people).
+- **anchor**: Contains anchor images used for comparisons.
 
 ### Negative Images
 
