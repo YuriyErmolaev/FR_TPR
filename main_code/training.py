@@ -6,7 +6,7 @@ binary_cross_loss = tf.losses.BinaryCrossentropy()
 opt = tf.keras.optimizers.Adam(1e-4)  # 0.0001
 
 # Set checkpoint mechanism
-checkpoint_dir = './training_checkpoints'
+checkpoint_dir = '../training_checkpoints'
 checkpoint_prefix = os.path.join(checkpoint_dir, 'ckpt')
 checkpoint = tf.train.Checkpoint(opt=opt)
 

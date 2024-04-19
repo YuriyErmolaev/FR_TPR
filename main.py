@@ -1,10 +1,10 @@
-from setup import setup_gpu, setup_paths
+from main_code.setup import setup_gpu, setup_paths
 setup_gpu()
 #step 1 # Setup GPU and data paths # setup.py # move into top for avoid errors
-from data_loading import load_and_count_images, pair_and_label_images, preprocess #preprocess use in data pipeline
-from data_pipeline import configure_training_pipeline, split_data
-from model_architecture import make_embedding, make_siamese_model
-from training import train
+from main_code.data_loading import load_and_count_images, pair_and_label_images  #preprocess use in data pipeline
+from main_code.data_pipeline import configure_training_pipeline, split_data
+from main_code.model_architecture import make_embedding, make_siamese_model
+from main_code.training import train
 
 POS_PATH, NEG_PATH, ANC_PATH = setup_paths()
 

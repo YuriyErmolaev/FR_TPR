@@ -1,4 +1,4 @@
-from data_loading import preprocess
+from main_code.data_loading import preprocess
 
 def preprocess_twin(input_img, validation_img, label):
     # Define preprocessing for paired images
