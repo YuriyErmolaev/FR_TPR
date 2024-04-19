@@ -5,7 +5,7 @@ import os
 from setup import setup_gpu, setup_paths
 from data_loading import load_and_count_images, pair_and_label_images, preprocess #preprocess use in data pipeline
 from data_pipeline import configure_training_pipeline, split_data
-
+from model_architecture import make_embedding
 
 #step 1
 # Setup GPU and data paths
@@ -27,42 +27,14 @@ data = pair_and_label_images(anchor, positive, negative)
 data = configure_training_pipeline(data)
 train_data, test_data = split_data(data)
 
-
-#step 9
+# step 9
 # Def emb model arch
+# model_architecture.py
 
-def make_embedding():
-    inp = Input(shape=(100, 100, 3), name='input_image')
-
-    # First block
-    c1 = Conv2D(64, (10, 10), activation='relu')(inp)
-    m1 = MaxPooling2D(64, (2, 2), padding='same')(c1)
-
-    # Second block
-    c2 = Conv2D(128, (7, 7), activation='relu')(m1)
-    m2 = MaxPooling2D(64, (2, 2), padding='same')(c2)
-
-    # Third block
-    c3 = Conv2D(128, (4, 4), activation='relu')(m2)
-    m3 = MaxPooling2D(64, (2, 2), padding='same')(c3)
-
-    # Final embedding block
-    c4 = Conv2D(256, (4, 4), activation='relu')(m3)
-    f1 = Flatten()(c4)
-    d1 = Dense(4096, activation='sigmoid')(f1)
-
-    # return Model(inputs=[inp], outputs=[d1], name='embedding')
-    return Model(inputs=inp, outputs=d1, name='embedding')
-
-
-
-#step 10
+# step 10
 # Init and show the emb model
-
 embedding = make_embedding()
 embedding.summary()
-
-
 
 #step 11
 # Def custom layer to calc L1 distance for Siamese network
