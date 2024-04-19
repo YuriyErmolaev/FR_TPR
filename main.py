@@ -2,55 +2,30 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Layer, Conv2D, Dense, MaxPooling2D, Input, Flatten
 import tensorflow as tf
 import os
-import uuid
 from setup import setup_gpu, setup_paths
-from data_loading import load_and_count_images, pair_and_label_images, preprocess
+from data_loading import load_and_count_images, pair_and_label_images, preprocess #preprocess use in data pipeline
+from data_pipeline import configure_training_pipeline, split_data
+
 
 #step 1
 # Setup GPU and data paths
+# setup.py
 setup_gpu()
 POS_PATH, NEG_PATH, ANC_PATH = setup_paths()
 
 
 # Step 2, 3, 4
 # Load dataset images, preprocess, and label pairs for training
+# data_loading.py
 anchor, positive, negative = load_and_count_images(ANC_PATH, POS_PATH, NEG_PATH)
 data = pair_and_label_images(anchor, positive, negative)
 
 
-
-#step 5
-# Def for preproc paired images
-
-def preprocess_twin(input_img, validation_img, label):
-    return(preprocess(input_img), preprocess(validation_img), label)
-
-
-#step 6
-# Config dataloader pipeline for training
-
-# Build dataloader pipeline
-data = data.map(preprocess_twin)
-data = data.cache()
-data = data.shuffle(buffer_size=1024)
-
-
-#step 7
-
-# Training partition
-train_data = data.take(round(len(data)*.7))
-train_data = train_data.batch(16)
-train_data = train_data.prefetch(8)
-
-
-#step 8
-# Separate data into training set
-
-# Testing partition
-test_data = data.skip(round(len(data)*.7))
-test_data = test_data.take(round(len(data)*.3))
-test_data = test_data.batch(16)
-test_data = test_data.prefetch(8)
+# Step 5 to 8
+# Preprocess paired images, configure the training pipeline, and split data sets
+# data_pipeline.py
+data = configure_training_pipeline(data)
+train_data, test_data = split_data(data)
 
 
 #step 9
