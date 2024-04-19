@@ -36,7 +36,7 @@ class L1Dist(Layer):
         return tf.math.abs(input_embedding - validation_embedding)
 
 
-model = tf.keras.models.load_model('siamesemodelv2.keras', custom_objects={'L1Dist': L1Dist})
+model = tf.keras.models.load_model('siamesemodelv3.keras', custom_objects={'L1Dist': L1Dist})
 
 model.summary()
 
