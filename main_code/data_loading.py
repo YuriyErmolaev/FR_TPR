@@ -1,8 +1,28 @@
 import tensorflow as tf
 import os
-
+import glob
 
 def load_and_count_images(anc_path, pos_path, neg_path):
+    print("Current working directory:", os.getcwd())
+
+    print("Anchor path:", os.path.join(anc_path, '*.jpg'))
+    print('anc_path: ', anc_path)
+
+    anchor_files = glob.glob(anc_path)
+    print("Files in 'anchor' directory:")
+    for file in anchor_files:
+        print(file)
+
+    print("Positive path:", os.path.join(pos_path, '*.jpg'))
+    print('pos_path: ', pos_path)
+
+    pos_files = glob.glob(pos_path)
+    print("Files in 'pos' directory:")
+    for file in pos_files:
+        print(file)
+
+    print("Negative path:", os.path.join(neg_path, '*.jpg'))
+
     anchor = tf.data.Dataset.list_files(os.path.join(anc_path, '*.jpg')).take(300)
     positive = tf.data.Dataset.list_files(os.path.join(pos_path, '*.jpg')).take(300)
     negative = tf.data.Dataset.list_files(os.path.join(neg_path, '*.jpg')).take(300)

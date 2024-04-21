@@ -9,7 +9,7 @@ def setup_gpu():
         print('cur gpu: ', gpu)
 
 def setup_paths():
-    POS_PATH = os.path.join('../data', 'positive')
-    NEG_PATH = os.path.join('../data', 'negative')
-    ANC_PATH = os.path.join('../data', 'anchor')
+    POS_PATH = os.path.join('data', 'positive')
+    NEG_PATH = os.path.join('data', 'negative')
+    ANC_PATH = os.path.join('data', 'anchor')
     return POS_PATH, NEG_PATH, ANC_PATH

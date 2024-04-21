@@ -10,6 +10,7 @@ checkpoint_dir = '../training_checkpoints'
 checkpoint_prefix = os.path.join(checkpoint_dir, 'ckpt')
 checkpoint = tf.train.Checkpoint(opt=opt)
 
+
 @tf.function
 def train_step(batch, siamese_model):
     with tf.GradientTape() as tape:
@@ -20,6 +21,7 @@ def train_step(batch, siamese_model):
     grad = tape.gradient(loss, siamese_model.trainable_variables)
     opt.apply_gradients(zip(grad, siamese_model.trainable_variables))
     return loss
+
 
 def train(data, siamese_model, EPOCHS):
     for epoch in range(1, EPOCHS+1):
