@@ -1,4 +1,5 @@
 import tensorflow as tf
+from tensorflow.keras.metrics import Precision, Recall
 import os
 
 # Set loss function and optimizer
@@ -23,12 +24,37 @@ def train_step(batch, siamese_model):
     return loss
 
 
+# def train(data, siamese_model, EPOCHS):
+#     for epoch in range(1, EPOCHS+1):
+#         print('\n Epoch {}/{}'.format(epoch, EPOCHS))
+#         progbar = tf.keras.utils.Progbar(len(data))
+#         for idx, batch in enumerate(data):
+#             loss = train_step(batch, siamese_model)
+#             progbar.update(idx+1)
+#         if epoch % 10 == 0:
+#             checkpoint.save(file_prefix=checkpoint_prefix)
+
 def train(data, siamese_model, EPOCHS):
-    for epoch in range(1, EPOCHS+1):
+    # Loop through epochs
+    for epoch in range(1, EPOCHS + 1):
         print('\n Epoch {}/{}'.format(epoch, EPOCHS))
         progbar = tf.keras.utils.Progbar(len(data))
+
+        # Creating a metric object
+        r = Recall()
+        p = Precision()
+
+        # Loop through each batch
         for idx, batch in enumerate(data):
+            # Run train step here
+            # loss = train_step(batch)
             loss = train_step(batch, siamese_model)
-            progbar.update(idx+1)
+            yhat = siamese_model.predict(batch[:2])
+            r.update_state(batch[2], yhat)
+            p.update_state(batch[2], yhat)
+            progbar.update(idx + 1)
+        print(loss.numpy(), r.result().numpy(), p.result().numpy())
+
+        # Save checkpoints
         if epoch % 10 == 0:
             checkpoint.save(file_prefix=checkpoint_prefix)

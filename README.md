@@ -6,6 +6,10 @@ need organize images into three folders (in data folder):
 - **negative**: Contains images for creating negative pairs (images of different people).
 - **anchor**: Contains anchor images used for comparisons.
 
+```bash
+python make_data_dir.py
+```
+
 ### Negative Images
 
 For example, Faces in the Wild (LFW) database.
@@ -22,13 +26,15 @@ After downloading, extract the files into a temporary folder. To move them into 
 ```bash
 python move_negative.py
 ```
-### Anchor and Positive Images
+### Anchor, Positive and Negative Images
+
+Del photos from negative. To remain about 370 photos. Add about 30 photo without face.
 
 To create anchor and positive images, 
-run the cam_create_anchor_and_positive.py which open camera:
+run the cam_create_photos.py which open camera:
 
 ```bash
-python cam_create_anchor_and_positive.py
+python cam_create_photos.py
 ```
 
 When pressing and holding 'a' or 'p', 
@@ -36,10 +42,17 @@ need slowly rotate head to capture different sides of face
 
 Press and hold 'a' to capture about 400 anchor images.
 Press and hold 'p' to capture about 400 positive images.
+Press and hold 'n' to capture about 30 images without face.
 
 Images will be saved to 'data/anchor' and 'data/positive' folders.
 
 press 'q' for quit
+
+run augmemtation file
+
+```bash
+python make_aug.py
+```
 
 ## Create, train and save model
 

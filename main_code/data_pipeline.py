@@ -10,7 +10,7 @@ def configure_training_pipeline(data):
     # Configure the data loader pipeline for training
     data = data.map(preprocess_twin)
     data = data.cache()
-    data = data.shuffle(buffer_size=1024)
+    data = data.shuffle(buffer_size=10000)
     return data
 
 

@@ -29,4 +29,4 @@ EPOCHS = 50
 train(train_data, siamese_model, EPOCHS)
 
 #save model to file
-siamese_model.save('siamesemodelv3.keras')
+siamese_model.save('siamesemodelv5.keras')

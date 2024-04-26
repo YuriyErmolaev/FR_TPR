@@ -23,9 +23,9 @@ def load_and_count_images(anc_path, pos_path, neg_path):
 
     print("Negative path:", os.path.join(neg_path, '*.jpg'))
 
-    anchor = tf.data.Dataset.list_files(os.path.join(anc_path, '*.jpg')).take(300)
-    positive = tf.data.Dataset.list_files(os.path.join(pos_path, '*.jpg')).take(300)
-    negative = tf.data.Dataset.list_files(os.path.join(neg_path, '*.jpg')).take(300)
+    anchor = tf.data.Dataset.list_files(os.path.join(anc_path, '*.jpg')).take(3000)
+    positive = tf.data.Dataset.list_files(os.path.join(pos_path, '*.jpg')).take(3000)
+    negative = tf.data.Dataset.list_files(os.path.join(neg_path, '*.jpg')).take(3000)
 
     print(f"Number of anchor images: {anchor.cardinality().numpy()}")
     print(f"Number of positive images: {positive.cardinality().numpy()}")
