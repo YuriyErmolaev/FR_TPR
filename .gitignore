@@ -4,4 +4,16 @@ ifw/**/*.jpeg
 data/**/*.jpg
 data/**/*.png
 data/**/*.jpeg
+application_data/**/*.jpg
+application_data/**/*.png
+application_data/**/*.jpeg
+*.keras
 .idea/
+training_checkpoints/
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+
